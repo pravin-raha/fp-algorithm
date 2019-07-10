@@ -30,11 +30,12 @@ object MeanModeMedian {
     numCount.filter(_._2 == maxCount).keys.min
   }
 
-  def median(numbers: List[Int]): Float = if (numbers.length % 2 == 0) {
-    val mid: Int = Math.floor(numbers.size / 2).toInt
-    numbers.sorted.slice(mid - 1, mid + 1).sum.toFloat / 2
-  } else {
-    numbers.sorted(Ordering[Int].reverse).apply(numbers.length / 2)
-  }
+  def median(numbers: List[Int]): Float =
+    if (numbers.length % 2 == 0) {
+      val mid: Int = Math.floor(numbers.size / 2).toInt
+      numbers.sorted.slice(mid - 1, mid + 1).sum.toFloat / 2
+    } else {
+      numbers.sorted(Ordering[Int].reverse).apply(numbers.length / 2)
+    }
 
 }
