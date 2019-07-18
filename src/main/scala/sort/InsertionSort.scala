@@ -1,12 +1,14 @@
 package sort
 
-object SelectionSort {
+object InsertionSort {
 
+  def insert(x: Int, list: List[Int]): List[Int] = list match {
+    case Nil       => x :: Nil
+    case h :: tail => if (x < h) x :: h :: tail else h :: insert(x, tail)
+  }
   def sort(list: List[Int]): List[Int] = list match {
-    case Nil => Nil
-    case xs =>
-      val m = xs.min
-      m :: sort(xs diff List(m))
+    case Nil     => Nil
+    case x :: xs => insert(x, sort(xs))
   }
 
   def main(args: Array[String]): Unit = {
