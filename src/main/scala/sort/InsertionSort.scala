@@ -6,6 +6,7 @@ object InsertionSort {
     case Nil       => x :: Nil
     case h :: tail => if (x < h) x :: h :: tail else h :: insert(x, tail)
   }
+
   def sort(list: List[Int]): List[Int] = list match {
     case Nil     => Nil
     case x :: xs => insert(x, sort(xs))
