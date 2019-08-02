@@ -5,14 +5,14 @@ trait Tree
 case class Node(value: (Int, Int), children: List[Node]) extends Tree
 
 object Board {
-  val (n, m) = (3, 3)
+  val (n, m) = (4, 4)
 
   def validMove(x: Int, y: Int): Boolean = x >= 0 && x < n && y >= 0 && y < m
 
   def createAllMoves(x: Int, y: Int): List[(Int, Int)] = {
-    (x + 1, y) :: (x, y + 1) :: (x - 1, y) :: (x, y - 1) :: (x + 1, y + 1) :: (x - 1, y - 1) :: (x + 1, y - 1) :: (
-      x - 1,
-      y + 1
+    (x + 3, y) :: (x, y + 3) :: (x - 3, y) :: (x, y - 3) :: (x + 2, y + 2) :: (x - 2, y - 2) :: (x + 2, y - 2) :: (
+      x - 2,
+      y + 2
     ) :: Nil
   }
 
@@ -61,7 +61,7 @@ object Board {
       case node: Node =>
         val path = getPaths(node)
         println(path.map(p => (p, p.length)).maxBy(_._2))
-        path.map(println)
+//        path.map(println)
     }
   }
 }
