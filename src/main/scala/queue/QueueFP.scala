@@ -12,7 +12,7 @@ object QueueFP {
     case x :: xs => (xs, x)
   }
 
-  def inQueue(a: Int): State[Queue, Unit] = State(
+  def enQueue(a: Int): State[Queue, Unit] = State(
     s => (s :+ a, ())
   )
 
@@ -22,10 +22,10 @@ object QueueFPApp {
   import QueueFP._
 
   val program: State[Queue, Int] = for {
-    _ <- inQueue(1)
-    _ <- inQueue(2)
-    _ <- inQueue(3)
-    _ <- inQueue(4)
+    _ <- enQueue(1)
+    _ <- enQueue(2)
+    _ <- enQueue(3)
+    _ <- enQueue(4)
     a <- deQueue
   } yield a
 

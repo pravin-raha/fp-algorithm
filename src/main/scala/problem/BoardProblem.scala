@@ -4,7 +4,7 @@ trait Tree
 
 case class Node(value: (Int, Int), children: List[Node]) extends Tree
 
-object Board {
+object BoardProblem {
   val (n, m) = (4, 4)
 
   def validMove(x: Int, y: Int): Boolean = x >= 0 && x < n && y >= 0 && y < m
