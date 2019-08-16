@@ -13,7 +13,7 @@ case class Tile(x: Int, y: Int)
 
 case class Warnsdorff(
   private val dimension: (Int, Int),
-  private val getAllPossibleMoves: Tile => List[Tile]
+  private val getAllValidMoves: Tile => List[Tile]
 ) {
 
   private type Board = Array[Array[Int]]
@@ -26,7 +26,7 @@ case class Warnsdorff(
   }
 
   private def getNeighbours(tile: Tile, board: Board): List[Tile] =
-    getAllPossibleMoves(tile)
+    getAllValidMoves(tile)
       .filter(t => !isVisited(t, board))
 
   private def weight(tile: Tile, board: Board): Int = getNeighbours(tile, board).length
@@ -58,28 +58,32 @@ case class Warnsdorff(
 }
 
 object Warnsdorff extends App {
-  val (n, m) = (10, 10)
+  private val (n, m) = (10, 10)
 
-  def validMove(tile: Tile): Boolean = tile.x >= 0 && tile.x < n && tile.y >= 0 && tile.y < m
+  private def validMove(tile: Tile): Boolean = tile.x >= 0 && tile.x < n && tile.y >= 0 && tile.y < m
 
-  def createAllMoves(tile: Tile): List[Tile] = {
-    Tile(tile.x + 3, tile.y) :: Tile(tile.x, tile.y + 3) :: Tile(tile.x - 3, tile.y) ::
-      Tile(tile.x, tile.y - 3) :: Tile(tile.x + 2, tile.y + 2) ::
-      Tile(tile.x - 2, tile.y - 2) :: Tile(tile.x + 2, tile.y - 2) :: Tile(
+  private def verticalMoves(tile: Tile): List[Tile] = Tile(tile.x, tile.y + 3) :: Tile(tile.x, tile.y - 3) :: Nil
+
+  private def horizontalMoves(tile: Tile): List[Tile] = Tile(tile.x + 3, tile.y) :: Tile(tile.x - 3, tile.y) :: Nil
+
+  private def diagonalMoves(tile: Tile): List[Tile] =
+    Tile(tile.x + 2, tile.y + 2) :: Tile(tile.x - 2, tile.y - 2) :: Tile(tile.x + 2, tile.y - 2) :: Tile(
       tile.x - 2,
       tile.y + 2
     ) :: Nil
-  }
 
-  def createAllPossibleMove(tile: Tile): List[Tile] =
-    createAllMoves(tile)
+  private def createAllDirectionPossibleMoves(tile: Tile): List[Tile] =
+    verticalMoves(tile) ++ horizontalMoves(tile) ++ diagonalMoves(tile)
+
+  private def createAllValidMove(tile: Tile): List[Tile] =
+    createAllDirectionPossibleMoves(tile)
       .filter(validMove)
 
-  def printBoard(checkerBoard: Array[Array[Int]]): Unit = {
+  private def printBoard(checkerBoard: Array[Array[Int]]): Unit = {
     checkerBoard.foreach(arr => println(arr.mkString(",")))
   }
 
-  def boardToPath(board: Array[Array[Int]]): List[Tile] =
+  private def boardToPath(board: Array[Array[Int]]): List[Tile] =
     board.toList
       .map(_.toList)
       .zipWithIndex
@@ -91,7 +95,7 @@ object Warnsdorff extends App {
       .sortBy(_._2)
       .map(_._1)
 
-  Warnsdorff((n, m), createAllPossibleMove)
+  Warnsdorff((n, m), createAllValidMove)
     .getPath(Tile(0, 0)) match {
     case Right(value) => printBoard(value)
     case Left(value)  => println(value)
