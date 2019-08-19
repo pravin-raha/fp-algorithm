@@ -1,8 +1,8 @@
 package problem
 
-trait Tree
+private[problem] trait Tree
 
-case class Node(value: (Int, Int), children: List[Node]) extends Tree
+private[problem] case class Node(value: (Int, Int), children: List[Node]) extends Tree
 
 object BoardProblem {
   val (n, m) = (4, 4)
