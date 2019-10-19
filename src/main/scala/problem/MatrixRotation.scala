@@ -30,68 +30,67 @@ object MatrixRotation {
 
   case class Tile(point: Point, element: Int)
 
-  def rotateRight[A](list: List[A], i: Int): List[A] = {
+  def rotateRight[A](list: Seq[A], i: Int): Seq[A] = {
     val size = list.size
     list.drop(size - (i % size)) ++ list.take(size - (i % size))
   }
 
-  def convertMatrixIntoRing(matrix: List[List[Int]], iteration: Int, rotate: Int): List[Tile] = {
-    val tiles = listToTileMatrix(matrix)
-    val m     = (matrix.size - 1) - iteration
-    val n     = matrix.headOption.map(_.size - 1).getOrElse(0) - iteration
-    val ring: List[Tile] = firstOps(tiles, iteration, n, n + 1 - iteration) ::: secondOps(
-      tiles,
+  def convertMatrixIntoRing(matrix: Array[Array[Int]], iteration: Int, rotate: Int): Array[Tile] = {
+    val m = (matrix.length - 1) - iteration
+    val n = matrix.headOption.map(_.length - 1).getOrElse(0) - iteration
+    val ring: Array[Tile] = firstOps(matrix, iteration, n, n + 1 - iteration) ++ secondOps(
+      matrix,
       iteration + 1,
       iteration,
       m - iteration
-    ) ::: thirdOps(tiles, m, iteration + 1, n - iteration) ::: fourthOps(tiles, m - 1, n, m - 1 - iteration)
+    ) ++ thirdOps(matrix, m, iteration + 1, n - iteration) ++ fourthOps(matrix, m - 1, n, m - 1 - iteration)
     val point         = ring.map(_.point)
     val rotatedValues = rotateRight(ring.map(_.element), rotate)
     point.zip(rotatedValues).map { case (p, v) => Tile(p, v) }
   }
 
-  def firstOps(matrix: List[Tile], mMin: Int, nMax: Int, elementCount: Int): List[Tile] =
-    List.tabulate(elementCount)(i => matrix.find(t => t.point == Point(mMin, nMax - i)).get)
+  def firstOps(matrix: Array[Array[Int]], mMin: Int, nMax: Int, elementCount: Int): Array[Tile] =
+    Array.tabulate(elementCount)(i => Tile(Point(mMin, nMax - i), matrix(mMin)(nMax - i)))
 
-  def secondOps(matrix: List[Tile], mMin: Int, nMin: Int, elementCount: Int): List[Tile] =
-    List.tabulate(elementCount)(i => matrix.find(t => t.point == Point(mMin + i, nMin)).get)
+  def secondOps(matrix: Array[Array[Int]], mMin: Int, nMin: Int, elementCount: Int): Array[Tile] =
+    Array.tabulate(elementCount)(i => Tile(Point(mMin + i, nMin), matrix(mMin + i)(nMin)))
 
-  def thirdOps(matrix: List[Tile], mMax: Int, nMin: Int, elementCount: Int): List[Tile] =
-    List.tabulate(elementCount)(i => matrix.find(t => t.point == Point(mMax, nMin + i)).get)
+  def thirdOps(matrix: Array[Array[Int]], mMax: Int, nMin: Int, elementCount: Int): Array[Tile] =
+    Array.tabulate(elementCount)(i => Tile(Point(mMax, nMin + i), matrix(mMax)(nMin + i)))
 
-  def fourthOps(matrix: List[Tile], mMax: Int, nMax: Int, elementCount: Int): List[Tile] =
-    List.tabulate(elementCount)(i => matrix.find(t => t.point == Point(mMax - i, nMax)).get)
+  def fourthOps(matrix: Array[Array[Int]], mMax: Int, nMax: Int, elementCount: Int): Array[Tile] =
+    Array.tabulate(elementCount)(i => Tile(Point(mMax - i, nMax), matrix(mMax - i)(nMax)))
 
   def listToTileMatrix(matrix: List[List[Int]]): List[Tile] = matrix.zipWithIndex.flatMap { row =>
     row._1.zipWithIndex.map(e => Tile(Point(row._2, e._2), e._1))
   }
 
-  private def boardToPath(matrix: List[Tile]): List[Int] =
+  private def boardToPath(matrix: Seq[Tile]): Seq[Int] =
     matrix
       .sortBy(_.point)(Ordering.by(p => (p.x, p.y)))
       .map(_.element)
 
-  private def printMatrix(list: List[Int], m: Int, n: Int): Unit =
+  private def printMatrix(list: Seq[Int], n: Int): Unit =
     list
       .grouped(n)
       .foreach(arr => println(arr.mkString(" ")))
 
   def main(args: Array[String]): Unit = {
-    val testValue: List[List[Int]] = List(
-      List(1, 2, 3, 4),
-      List(7, 8, 9, 10),
-      List(13, 14, 15, 16),
-      List(19, 20, 21, 22),
-      List(25, 26, 27, 28)
+    val testValue: Array[Array[Int]] = Array(
+      Array(1, 2, 3, 4),
+      Array(7, 8, 9, 10),
+      Array(13, 14, 15, 16),
+      Array(19, 20, 21, 22),
+      Array(25, 26, 27, 28)
     )
 
-    val m        = testValue.size
-    val n        = testValue.headOption.map(_.size).getOrElse(0)
+    val m        = testValue.length
+    val n        = testValue.headOption.map(_.length).getOrElse(0)
     val counter  = math.min(m, n) / 2
     val rotation = 7
 
-    val resultMatrix: List[Tile] =
-      (0 until counter).map(i => convertMatrixIntoRing(testValue, i, rotation)).toList.flatten
-    printMatrix(boardToPath(resultMatrix), m, n)
+    val resultMatrix: Seq[Tile] =
+      (0 until counter).flatMap(i => convertMatrixIntoRing(testValue, i, rotation))
+    printMatrix(boardToPath(resultMatrix), n)
   }
 }
