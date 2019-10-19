@@ -30,7 +30,10 @@ object MatrixRotation {
 
   case class Tile(point: Point, element: Int)
 
-  def rotatedList[A](list: List[A])(i: Int): List[A] = list.drop(list.length - i) ++ list.take(list.length - i)
+  def rotateRight[A](list: List[A], i: Int): List[A] = {
+    val size = list.size
+    list.drop(size - (i % size)) ++ list.take(size - (i % size))
+  }
 
   def convertMatrixIntoRing(matrix: List[List[Int]], iteration: Int, rotate: Int): List[Tile] = {
     val tiles = listToTileMatrix(matrix)
@@ -43,7 +46,7 @@ object MatrixRotation {
       m - iteration
     ) ::: thirdOps(tiles, m, iteration + 1, n - iteration) ::: fourthOps(tiles, m - 1, n, m - 1 - iteration)
     val point         = ring.map(_.point)
-    val rotatedValues = rotatedList(ring.map(_.element))(rotate)
+    val rotatedValues = rotateRight(ring.map(_.element), rotate)
     point.zip(rotatedValues).map { case (p, v) => Tile(p, v) }
   }
 
@@ -68,26 +71,27 @@ object MatrixRotation {
       .sortBy(_.point)(Ordering.by(p => (p.x, p.y)))
       .map(_.element)
 
-  private def printMatrix(list: List[Int], n: Int): Unit =
+  private def printMatrix(list: List[Int], m: Int, n: Int): Unit =
     list
-      .sliding(n, n)
+      .grouped(n)
       .foreach(arr => println(arr.mkString(" ")))
 
   def main(args: Array[String]): Unit = {
     val testValue: List[List[Int]] = List(
       List(1, 2, 3, 4),
-      List(5, 6, 7, 8),
-      List(9, 10, 11, 12),
-      List(13, 14, 15, 16)
+      List(7, 8, 9, 10),
+      List(13, 14, 15, 16),
+      List(19, 20, 21, 22),
+      List(25, 26, 27, 28)
     )
 
     val m        = testValue.size
     val n        = testValue.headOption.map(_.size).getOrElse(0)
-    val counter  = (math.max(m, n) / 2) + 1
-    val rotation = 1
+    val counter  = math.min(m, n) / 2
+    val rotation = 7
 
     val resultMatrix: List[Tile] =
       (0 until counter).map(i => convertMatrixIntoRing(testValue, i, rotation)).toList.flatten
-    printMatrix(boardToPath(resultMatrix), n)
+    printMatrix(boardToPath(resultMatrix), m, n)
   }
 }
