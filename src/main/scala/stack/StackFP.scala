@@ -25,11 +25,11 @@ object StackFPApp {
   import StackFP._
 
   val program: State[Stack, Int] = for {
-    _ <- push(10)
-    _ <- push(20)
-    a <- pop
-    b <- pop
-    _ <- push(a + b)
+    _   <- push(10)
+    _   <- push(20)
+    a   <- pop
+    b   <- pop
+    _   <- push(a + b)
     res <- peek
   } yield res
 

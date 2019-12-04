@@ -1,14 +1,14 @@
 package staticstics
 
 /**
-  * Given an array, X, of N integers, calculate and print the respective mean, median, and mode on separate lines.
-  * If your array contains more than one modal value, choose the numerically smallest one.
-  */
+ * Given an array, X, of N integers, calculate and print the respective mean, median, and mode on separate lines.
+ * If your array contains more than one modal value, choose the numerically smallest one.
+ */
 object MeanModeMedian {
 
   def main(args: Array[String]): Unit = {
 
-    val n = scala.io.StdIn.readInt()
+    val n     = scala.io.StdIn.readInt()
     val array = scala.io.StdIn.readLine().split(" ").toList.map(_.toInt)
 
     import java.text.DecimalFormat

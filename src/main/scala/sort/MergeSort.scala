@@ -15,13 +15,13 @@ object MergeSort {
     case Nil      => Nil
     case _ :: Nil => list
     case _ =>
-      val n = list.length / 2
+      val n             = list.length / 2
       val (left, right) = list.splitAt(n)
       merge(sort(left), sort(right))
   }
 
   def main(args: Array[String]): Unit = {
-    val l = List(2, 1, 5, 4, 8, 9, 6, 3, 1, 5)
+    val l  = List(2, 1, 5, 4, 8, 9, 6, 3, 1, 5)
     val l2 = List(1, 2, 3, 4, 5, 6)
     val l3 = l2.reverse
 

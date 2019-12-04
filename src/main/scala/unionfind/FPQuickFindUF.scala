@@ -10,8 +10,8 @@ object FPQuickFindUF {
 
   def union(a: Int, b: Int): State[UnionSet, Unit] =
     State(s => {
-      val pid = a
-      val qid = b
+      val pid      = a
+      val qid      = b
       val newState = s.map(i => if (i == pid) qid else i)
       (newState, ())
     })
